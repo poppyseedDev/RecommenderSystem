@@ -16,28 +16,23 @@ datasetPropreties = {
 def Main():
     load_data = read_data_frame.LoadDataFrames(datasetPropreties)   #initialize class to load data
 
-    #load the data
+    # Load the data
     df = load_data.read_user_ratings_data()
 
+    # Initialize classes
     visualize = visualization.VisualizationOfData(df)               #initialize class to visulaize data
     preProcessed = pre_processing.PreProcessing(df)                 #initialize class to pre-process data
-    visualize.unique_itemID_histogram()     # display the histograms with unique titles
 
-
-    #make a user-items matrix from columns
-    #print(df.head())
-    #item_matrix = pd.pivot_table(df, values="rating", index="user_id", columns="item_id")
-
-    #print(item_matrix.head())
-
-    #preProcessed.calculateSparsity(printState = True)
-
-
-    # Reduce the matrix for only
+    # Reduce the matrix for given item and user thresholds
     reduced_df = preProcessed.getRidOfUsersWhoAreNotEnoughtActive()
-    preProcessed.calculateSparsity(printState=True)
+    #preProcessed.calculateSparsity(printState=True)
     visualize.set_df(reduced_df)
-    visualize.unique_itemID_histogram()     # display the histograms with unique titles
+
+    # Create a user-items matrix from columns
+    user_item_matrix = preProcessed.createUserItemMatrix()
+
+
+
 
 
 

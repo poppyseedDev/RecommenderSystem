@@ -29,10 +29,37 @@ class VisualizationOfData:
         unique_item_id['num of ratings'] = pd.DataFrame(self._df.groupby('item_id')['rating'].count())
 
         fig, (ax1, ax2) = plt.subplots(2)
+        fig.suptitle("Histogram of Amazon Fashion data category grouped by item id")
         ax1.hist(unique_item_id['num of ratings'], bins=70)
+        ax1.set_xlabel("number of ratings per item")
+        ax1.set_ylabel("amounts of items")
 
         ax2.hist(unique_item_id['rating'], bins=70)
+        ax2.set_xlabel("average rating of item")
+        ax2.set_ylabel("amounts of items")
 
-        sns.jointplot(x='rating', y='num of ratings', data=unique_item_id, alpha=0.5)
+        p = sns.jointplot(x='rating', y='num of ratings', data=unique_item_id, alpha=0.5)
+        p.fig.suptitle("Scatter plot of average rating vs rating per item on Amazon Fashion data")
+
+
+        plt.show()
+
+    def unique_userID_histogram(self):
+        #group by user_id
+        unique_user_id = pd.DataFrame(self._df.groupby('user_id')['rating'].mean())
+        unique_user_id['num of ratings'] = pd.DataFrame(self._df.groupby('user_id')['rating'].count())
+
+        fig, (ax1, ax2) = plt.subplots(2)
+        fig.suptitle("Histogram of Amazon Fashion data category grouped by user id")
+        ax1.hist(unique_user_id['num of ratings'], bins=70)
+        ax1.set_xlabel("number of ratings per user")
+        ax1.set_ylabel("amounts of users")
+
+        ax2.hist(unique_user_id['rating'], bins=70)
+        ax2.set_xlabel("users average rating")
+        ax2.set_ylabel("amounts of users")
+
+        p = sns.jointplot(x='rating', y='num of ratings', data=unique_user_id, alpha=0.5)
+        p.fig.suptitle("Scatter plot of average rating vs rating per user on Amazon Fashion data")
 
         plt.show()
