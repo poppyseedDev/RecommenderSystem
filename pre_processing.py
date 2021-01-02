@@ -34,9 +34,12 @@ class PreProcessing:
         unique_item_id['num_of_item_ratings'] = pd.DataFrame(self.df.groupby('item_id')['rating'].count())
         unique_item_id.rename(columns={'rating': 'avg_item_rating'}, inplace=True)
 
+
         unique_user_id = pd.DataFrame(self.df.groupby('user_id')['rating'].mean())
         unique_user_id['num_of_user_ratings'] = pd.DataFrame(self.df.groupby('user_id')['rating'].count())
         unique_user_id.rename(columns={'rating': 'avg_user_rating'}, inplace=True)      #renaming to prevent naming issues down the line
+
+        #print(unique_user_id.sort_values('num_of_user_ratings',ascending=False).head(10))
 
         # Reduce values
         unique_item_id = unique_item_id[unique_item_id['num_of_item_ratings'] >= self.TRESH_ITEMS]
@@ -52,9 +55,9 @@ class PreProcessing:
 
         return self.df
 
-    def createUserItemMatrix(self):
+    def createUserItemMatrix(self, index, columns):
         # Create a user-items matrix from columns
-        item_matrix = pd.pivot_table(self.df, values="rating", index="user_id", columns="item_id")
+        item_matrix = pd.pivot_table(self.df, values="rating", index=index, columns=columns)
         return item_matrix
 
 
