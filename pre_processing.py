@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 class PreProcessing:
     def __init__(self, df):
         self.df = df
-        self.TRESH_ITEMS = 100
-        self.TRESH_USERS = 3
+        self.TRESH_ITEMS = 20
+        self.TRESH_USERS = 5
 
     def calculateSparsity(self, printState = False):
         num_of_ratings = self.df.size
@@ -42,7 +42,7 @@ class PreProcessing:
         #print(unique_user_id.sort_values('num_of_user_ratings',ascending=False).head(10))
 
         # Reduce values
-        unique_item_id = unique_item_id[unique_item_id['num_of_item_ratings'] >= self.TRESH_ITEMS]
+        #unique_item_id = unique_item_id[unique_item_id['num_of_item_ratings'] >= self.TRESH_ITEMS]
         unique_user_id = unique_user_id[unique_user_id['num_of_user_ratings'] >= self.TRESH_USERS]
 
         size_before = self.df.size
@@ -53,11 +53,20 @@ class PreProcessing:
 
         print("Reducing size from {} to {}.".format(size_before, size_now))
 
+        #print(self.df[self.df['user_id']== 'A3G5KDMFNRUXHB'])
+
         return self.df
 
     def createUserItemMatrix(self, index, columns):
         # Create a user-items matrix from columns
+        #print(self.df.size)
         item_matrix = pd.pivot_table(self.df, values="rating", index=index, columns=columns)
+
+        spars_count = item_matrix.isnull().values.sum()
+        full_count = item_matrix.size
+        print("Sparsity: ", spars_count/full_count)
+
+
         return item_matrix
 
 

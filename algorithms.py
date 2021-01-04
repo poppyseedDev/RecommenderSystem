@@ -1,3 +1,5 @@
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 
@@ -26,3 +28,25 @@ class Algorithms:
         else:
             print("Call this class with setMatrix to set a matrix")
             return 0
+
+    def calculateCosineSimilarity(self):
+        mean_users = self.matrix.mean(axis='index')
+        # user_item_matrix.mean(axis='index').hist(bins=70)
+        # plt.show()
+
+        user_item_matrix = self.matrix - mean_users
+
+        user_item_matrix.fillna(value=0, inplace=True)
+
+        # find similar users
+        user_item_matrix = user_item_matrix.to_numpy()
+        similar_users = cosine_similarity([user_item_matrix[0][:]], user_item_matrix)
+
+        locations_of_similar_users = np.where(similar_users[0] > 0.3)
+
+        # get names of the array
+        loc_names_sim_users = []
+        for location in locations_of_similar_users:
+            loc_names_sim_users.append(self.matrix.index[location])
+
+        return loc_names_sim_users
