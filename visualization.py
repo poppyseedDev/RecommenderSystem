@@ -63,3 +63,16 @@ class VisualizationOfData:
         p.fig.suptitle("Scatter plot of average rating vs rating per user on Amazon Fashion data")
 
         plt.show()
+
+    def plotResultsHistogram(self, cos, corr):
+        plt.hist(corr, bins=30)
+        plt.title('A histogram of recommended items for every user for Pearsons similarity')
+        plt.xlabel('Number of predicted items per user')
+        plt.ylabel('Number of users')
+        plt.show()
+
+        plt.hist(cos, bins=30)
+        plt.title('A histogram of recommended items for every user for Cosine similarity')
+        plt.xlabel('Number of predicted items per user')
+        plt.ylabel('Number of users')
+        plt.show()

@@ -10,16 +10,16 @@ import matplotlib.pyplot as plt
 class PreProcessing:
     def __init__(self, df):
         self.df = df
-        self.TRESH_ITEMS = 20
-        self.TRESH_USERS = 5
+        self.TRESH_ITEMS = 300
+        self.TRESH_USERS = 2
 
     def calculateSparsity(self, printState = False):
-        num_of_ratings = self.df.size
+        num_of_ratings = self.df.index.size
         num_of_items = len(pd.unique(self.df['item_id']))
         num_of_users = len(pd.unique(self.df['user_id']))
         num_of_elements = num_of_items * num_of_users
 
-        sparsity = num_of_ratings/num_of_elements * 100
+        sparsity = 100 - num_of_ratings/num_of_elements * 100
 
         if (printState):
             print("Nb. of ratings: {}".format(num_of_ratings))
@@ -42,7 +42,7 @@ class PreProcessing:
         #print(unique_user_id.sort_values('num_of_user_ratings',ascending=False).head(10))
 
         # Reduce values
-        #unique_item_id = unique_item_id[unique_item_id['num_of_item_ratings'] >= self.TRESH_ITEMS]
+        unique_item_id = unique_item_id[unique_item_id['num_of_item_ratings'] >= self.TRESH_ITEMS]
         unique_user_id = unique_user_id[unique_user_id['num_of_user_ratings'] >= self.TRESH_USERS]
 
         size_before = self.df.size
@@ -53,7 +53,6 @@ class PreProcessing:
 
         print("Reducing size from {} to {}.".format(size_before, size_now))
 
-        #print(self.df[self.df['user_id']== 'A3G5KDMFNRUXHB'])
 
         return self.df
 
@@ -64,7 +63,7 @@ class PreProcessing:
 
         spars_count = item_matrix.isnull().values.sum()
         full_count = item_matrix.size
-        print("Sparsity: ", spars_count/full_count)
+        print("Sparsity: ", spars_count/full_count * 100, "%")
 
 
         return item_matrix

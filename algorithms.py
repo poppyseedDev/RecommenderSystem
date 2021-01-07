@@ -14,39 +14,51 @@ class Algorithms:
         if (self.matrix.any):
             # Correlation - find similaries to item
             # you have to remove users who have not rated this item to find out which items match
-            user_item_matrix_random_item = self.matrix[self.matrix[item].notnull()]
-            user_item_matrix_random_item = user_item_matrix_random_item.dropna(axis='columns', thresh=2)
+            item_user_matrix_random_item = self.matrix[self.matrix[item].notnull()]
+            item_user_matrix_random_item = item_user_matrix_random_item.dropna(axis='columns', thresh=2)
 
-            random_item_ratings = user_item_matrix_random_item[item]
+            random_item_ratings = self.matrix[item]
+            if (item_user_matrix_random_item.any):
+                similar_to_random_item = item_user_matrix_random_item.corrwith(random_item_ratings)
+                if (printState):
+                    print(similar_to_random_item)
 
-            similar_to_random_item = user_item_matrix_random_item.corrwith(random_item_ratings)
+                list_of_similar_items = similar_to_random_item.index[similar_to_random_item > 0.3]
 
-            if (printState):
-                print(similar_to_random_item.sort_values(ascending=False).head(100))
+                return list(list_of_similar_items)
 
-            return similar_to_random_item
+            else:
+                print('No matching items to be found.')
+                return 0
+
         else:
-            print("Call this class with setMatrix to set a matrix")
+            print("Call this class with setMatrix method to set a matrix")
             return 0
 
-    def calculateCosineSimilarity(self):
-        mean_users = self.matrix.mean(axis='index')
-        # user_item_matrix.mean(axis='index').hist(bins=70)
-        # plt.show()
+    def calculateCosineSimilarity(self, item):
+        if (self.matrix.any):
+            indexOfItem = self.matrix.index.get_loc(item)
 
-        user_item_matrix = self.matrix - mean_users
+            mean_items = self.matrix.mean(axis='index')
+            # item_user_matrix.mean(axis='index').hist(bins=70)
+            # plt.show()
 
-        user_item_matrix.fillna(value=0, inplace=True)
+            item_user_matrix = self.matrix - mean_items
 
-        # find similar users
-        user_item_matrix = user_item_matrix.to_numpy()
-        similar_users = cosine_similarity([user_item_matrix[0][:]], user_item_matrix)
+            item_user_matrix.fillna(value=0, inplace=True)
 
-        locations_of_similar_users = np.where(similar_users[0] > 0.3)
+            # find similar users
+            item_user_matrix = item_user_matrix.to_numpy()
+            similar_users = cosine_similarity([item_user_matrix[indexOfItem][:]], item_user_matrix)
 
-        # get names of the array
-        loc_names_sim_users = []
-        for location in locations_of_similar_users:
-            loc_names_sim_users.append(self.matrix.index[location])
+            locations_of_similar_items = np.where(similar_users[0] > 0.3)
 
-        return loc_names_sim_users
+            # get names of the array
+            loc_names_sim_users = []
+            for location in locations_of_similar_items:
+                loc_names_sim_users.append(list(self.matrix.index[location]))
+
+            return list(loc_names_sim_users)
+        else:
+            print("Call this class with setMatrix method to set a matrix")
+            return 0
